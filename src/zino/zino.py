@@ -37,7 +37,10 @@ def main():
         format="%(asctime)s - %(levelname)s - %(name)s (%(threadName)s) - %(message)s",
     )
     state.config = read_configuration(args.config_file.name)
-    state.state = state.ZinoState.load_state_from_file() or state.ZinoState()
+    state.state = (
+        state.ZinoState.load_state_from_file(state.config.get("persistent_file", "zino-state.json"))
+        or state.ZinoState()
+    )
     init_event_loop(args)
 
 
@@ -76,6 +79,7 @@ def init_event_loop(args: argparse.Namespace, loop: Optional[AbstractEventLoop] 
     scheduler.add_job(
         func=state.state.dump_state_to_file,
         trigger="interval",
+        args=(state.config.get("persist_file", state.STATE_FILENAME),),
         id=STATE_DUMP_JOB_ID,
         minutes=state.config.get("persist_period", DEFAULT_INTERVAL_MINUTES),
     )
