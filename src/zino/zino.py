@@ -72,9 +72,12 @@ def init_event_loop(args: argparse.Namespace, loop: Optional[AbstractEventLoop] 
         minutes=1,
         next_run_time=datetime.now(),
     )
-    # Schedule state dumping every DEFAULT_INTERVAL_MINUTES and reschedule whenever events are committed
+    # Schedule state dumping as often as configured in 'persist_period' and reschedule whenever events are committed
     scheduler.add_job(
-        func=state.state.dump_state_to_file, trigger="interval", id=STATE_DUMP_JOB_ID, minutes=DEFAULT_INTERVAL_MINUTES
+        func=state.state.dump_state_to_file,
+        trigger="interval",
+        id=STATE_DUMP_JOB_ID,
+        minutes=state.config.get("persist_period", DEFAULT_INTERVAL_MINUTES),
     )
     state.state.events.add_event_observer(reschedule_dump_state_on_commit)
 
