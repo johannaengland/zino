@@ -72,7 +72,7 @@ def init_event_loop(args: argparse.Namespace, loop: Optional[AbstractEventLoop] 
         func=load_and_schedule_polldevs,
         trigger="interval",
         args=(args.polldevs.name or state.config.get("pollfile", "polldevs.cf"),),
-        minutes=1,
+        minutes=state.config.get("conf_check", 1),
         next_run_time=datetime.now(),
     )
     # Schedule state dumping as often as configured in 'persist_period' and reschedule whenever events are committed
