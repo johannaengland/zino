@@ -71,7 +71,7 @@ def init_event_loop(args: argparse.Namespace, loop: Optional[AbstractEventLoop] 
     scheduler.add_job(
         func=load_and_schedule_polldevs,
         trigger="interval",
-        args=(args.polldevs.name,),
+        args=(args.polldevs.name or state.config.get("pollfile", "polldevs.cf"),),
         minutes=1,
         next_run_time=datetime.now(),
     )
@@ -167,7 +167,7 @@ def reschedule_dump_state_on_commit(new_event: Event, old_event: Optional[Event]
 def parse_args(arguments=None):
     parser = argparse.ArgumentParser(description="Zino is not OpenView")
     parser.add_argument(
-        "--polldevs", type=argparse.FileType("r"), metavar="PATH", default="polldevs.cf", help="Path to polldevs.cf"
+        "--polldevs", type=argparse.FileType("r"), metavar="PATH", default=None, help="Path to the pollfile"
     )
     parser.add_argument(
         "--config-file",
