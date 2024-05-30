@@ -4,7 +4,7 @@ __all__ = ["polldevs", "ZinoState"]
 
 import json
 import logging
-from typing import Dict, Optional
+from typing import Any, Dict, Optional
 
 from pydantic import BaseModel, Field
 
@@ -20,6 +20,9 @@ polldevs: Dict[str, PollDevice] = {}
 
 # Global (sic) state
 state: "ZinoState" = None
+
+# Dictionary for configuration
+config: Dict[str, Any] = {}
 
 
 class ZinoState(BaseModel):
