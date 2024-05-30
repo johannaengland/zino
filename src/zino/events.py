@@ -150,10 +150,13 @@ class Events(BaseModel):
 
     def _delete(self, event: Event):
         """Removes a closed event from the events dict and notifies all observers"""
+        from zino.state import config
+
         if event.state != EventState.CLOSED:
             return
 
-        event.dump_event_to_file(dir_name=f"{EVENT_DUMP_DIR}/{now().year}-{now().month}/{now().day}")
+        base_dir = config.get("old_events", EVENT_DUMP_DIR)
+        event.dump_event_to_file(dir_name=f"{base_dir}/{now().year}-{now().month}/{now().day}")
         index = EventIndex(event.router, event.subindex, type(event))
         if self._events_by_index.get(index) and event.id == self._events_by_index[index].id:
             _log.info("Closed event %s was still in event index, removing it now", event.id)
