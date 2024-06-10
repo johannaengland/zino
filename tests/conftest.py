@@ -63,6 +63,22 @@ def polldevs_conf_with_no_routers(tmp_path):
     yield name
 
 
+@pytest.fixture
+def zino_default_conf(tmp_path):
+    name = tmp_path / "zino.toml"
+    with open(name, "w") as conf:
+        conf.write(
+            """
+            old_events = "old-events"
+            zino_secrets = "secrets"
+            persist_file = "zino-state.json"
+            persist_period = 5
+            conf_check = 1
+            """
+        )
+    yield name
+
+
 @pytest.fixture(scope="session")
 def event_loop():
     """Redefine pytest-asyncio's event_loop fixture to have a session scope"""

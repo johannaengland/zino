@@ -26,7 +26,7 @@ def test_zino_help_screen_should_not_crash():
     assert subprocess.check_call(["zino", "--help"]) == 0
 
 
-def test_zino_should_not_crash_right_away(polldevs_conf_with_no_routers):
+def test_zino_should_not_crash_right_away(polldevs_conf_with_no_routers, zino_default_conf):
     """This tests that the main function runs Zino for at least 2 seconds"""
     seconds_to_run_for = 2
     subprocess.check_call(
@@ -36,14 +36,16 @@ def test_zino_should_not_crash_right_away(polldevs_conf_with_no_routers):
             str(seconds_to_run_for),
             "--polldevs",
             str(polldevs_conf_with_no_routers),
+            "--config-file",
+            str(zino_default_conf),
             "--trap-port",
             "1162",
         ]
     )
 
 
-def test_zino_argparser_works(polldevs_conf):
-    parser = zino.parse_args(["--polldevs", str(polldevs_conf)])
+def test_zino_argparser_works(polldevs_conf, zino_default_conf):
+    parser = zino.parse_args(["--polldevs", str(polldevs_conf), "--config-file", str(zino_default_conf)])
     assert isinstance(parser, Namespace)
 
 
